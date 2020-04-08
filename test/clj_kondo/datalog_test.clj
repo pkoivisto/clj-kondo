@@ -36,4 +36,8 @@
       (testing "absence of argument doesn't make linter throw"
         (is (empty? (lint! "(ns user (:require [datahike.api :refer [q]]))
                           (q) (q nil)"
-                           {:linters {:datalog-syntax {:level :error}}}))))))
+                           {:linters {:datalog-syntax {:level :error}}}))))
+
+      (testing "required namespace isn't reported unused if it's used within (quoted) query expression"
+        (is (empty? (lint! "(ns user (:require [my-namespace :as my-ns] [datahike.api :refer [q]]))
+                             (q '[:find ?a :where [?a ::my-ns/foo _]] 1337)"))))))
